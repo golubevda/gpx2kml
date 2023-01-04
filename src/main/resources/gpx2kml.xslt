@@ -205,37 +205,37 @@
             <xsl:when test="$type='Found it'">
                 <xsl:call-template name="logTypeSpan">
                     <xsl:with-param name="color" select="'green'"/>
-                    <xsl:with-param name="label" select="'Найден'"/>
+                    <xsl:with-param name="label" select="'&#10004;'"/>
                 </xsl:call-template>
             </xsl:when>
             <xsl:when test="$type='Restored'">
                 <xsl:call-template name="logTypeSpan">
                     <xsl:with-param name="color" select="'green'"/>
-                    <xsl:with-param name="label" select="'Восстановлен'"/>
+                    <xsl:with-param name="label" select="'&#9873;'"/>
                 </xsl:call-template>
             </xsl:when>
                 <xsl:when test="$type='Creator''s Check'">
                     <xsl:call-template name="logTypeSpan">
                     <xsl:with-param name="color" select="'green'"/>
-                    <xsl:with-param name="label" select="'Проверен'"/>
+                    <xsl:with-param name="label" select="'&#128076;'"/>
                 </xsl:call-template>
             </xsl:when>
             <xsl:when test="$type='Visited'">
                 <xsl:call-template name="logTypeSpan">
                     <xsl:with-param name="color" select="'grey'"/>
-                    <xsl:with-param name="label" select="'Посещён'"/>
+                    <xsl:with-param name="label" select="'&#128099;'"/>
                 </xsl:call-template>
             </xsl:when>
             <xsl:when test="$type='Write note'">
                 <xsl:call-template name="logTypeSpan">
                     <xsl:with-param name="color" select="'grey'"/>
-                    <xsl:with-param name="label" select="'Комментарий'"/>
+                    <xsl:with-param name="label" select="'&#128393;'"/>
                 </xsl:call-template>
             </xsl:when>
             <xsl:when test="$type='Didn''t find it'">
                 <xsl:call-template name="logTypeSpan">
                     <xsl:with-param name="color" select="'red'"/>
-                    <xsl:with-param name="label" select="'Не найден'"/>
+                    <xsl:with-param name="label" select="'&#10006;'"/>
                 </xsl:call-template>
             </xsl:when>
             <xsl:otherwise>
