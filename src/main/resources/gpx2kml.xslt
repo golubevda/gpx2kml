@@ -1,6 +1,7 @@
 <?xml version="1.0"?>
 <xsl:stylesheet version="3.0"
                 xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
+    <xsl:output method="xml" encoding="UTF-8"/>
 
     <xsl:template match="/">
         <kml xmlns="http://www.opengis.net/kml/2.2">
@@ -84,14 +85,23 @@
 
     <xsl:template name="logs">
         <xsl:for-each select="*[local-name()='logs']/*[local-name()='log']">
-            &lt;p&gt;
-            <xsl:call-template name="dateTime">
-                <xsl:with-param name="value" select="*[local-name()='date']"/>
-            </xsl:call-template>
-            <xsl:text> </xsl:text>&lt;b&gt;<xsl:value-of select="*[local-name()='finder']"/>&lt;/b&gt;&lt;br/&gt;
-            &lt;b&gt;Результат:&lt;/b&gt; <xsl:value-of select="*[local-name()='type']"/>&lt;br/&gt;
-            <xsl:value-of select="*[local-name()='text']"/>
-            &lt;/p&gt;
+            &lt;div style=&quot;border: 1px solid; padding: 4px; margin: 4px 0; border-radius: 6px&quot;&gt;
+                &lt;div style=&quot;display: table; width: 100%&quot;&gt;
+                    &lt;div style=&quot;display: table-cell&quot;&gt;
+                        <xsl:value-of select="*[local-name()='type']"/> &lt;b&gt;<xsl:value-of select="*[local-name()='finder']"/>&lt;/b&gt;
+                &lt;/div&gt;
+                    &lt;div style=&quot;display: table-cell; text-align: right&quot;&gt;
+                        <xsl:call-template name="dateTime">
+                            <xsl:with-param name="value" select="*[local-name()='date']"/>
+                        </xsl:call-template>
+                    &lt;/div&gt;
+                &lt;/div&gt;
+                &lt;div style=&quot;display: table; width: 100%&quot;&gt;
+                    &lt;div style=&quot;display: table-cell&quot;&gt;
+                        <xsl:value-of select="*[local-name()='text']"/>
+                    &lt;/div&gt;
+                &lt;/div&gt;
+            &lt;/div&gt;
         </xsl:for-each>
     </xsl:template>
 
