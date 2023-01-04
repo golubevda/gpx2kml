@@ -58,16 +58,16 @@
     </xsl:template>
 
     <xsl:template name="description">
-        &lt;a href=&quot;<xsl:value-of select="(*[local-name()='url'])"/>&quot;&gt;[<xsl:value-of
-            select="*[local-name()='name']"/>] <xsl:value-of select="*[local-name()='desc']"/>&lt;/a&gt;
+        <xsl:variable name="cacheCode" select="*[local-name()='name']"/>
+        <xsl:variable name="cacheDate" select="*[local-name()='time']"/>
+        &lt;a href=&quot;<xsl:value-of select="(*[local-name()='url'])"/>&quot;&gt;[<xsl:value-of select="$cacheCode"/>]
+        <xsl:value-of select="*[local-name()='desc']"/>&lt;/a&gt;
         &lt;p&gt;
-        &lt;b&gt;Создан:&lt;/b&gt;
-        <xsl:call-template name="dateOnly">
-            <xsl:with-param name="value" select="*[local-name()='time']"/>
-        </xsl:call-template>
-        &lt;br/&gt;
         <xsl:for-each select="*[local-name()='cache']">
-            <xsl:call-template name="descHeader"/>
+            <xsl:call-template name="descHeader">
+                <xsl:with-param name="cacheCode" select="$cacheCode"/>
+                <xsl:with-param name="cacheDate" select="$cacheDate"/>
+            </xsl:call-template>
         </xsl:for-each>
         &lt;/p&gt;
         &lt;p&gt;
@@ -92,9 +92,6 @@
                 .log > div > div { display: table-cell }
                 .log > div:nth-of-type(1) > div:nth-of-type(2) { text-align: right }
                 .log .log-type { font-weight: bold }
-                .log .log-type.green { color: green }
-                .log .log-type.red { color: red }
-                .log .log-type.grey { color: grey }
                 &lt;/style&gt;
                 <xsl:for-each select="*[local-name()='logs']/*[local-name()='log']">
                     &lt;div class=&quot;log&quot;&gt;
@@ -126,7 +123,31 @@
     </xsl:template>
 
     <xsl:template name="descHeader">
-        &lt;b&gt;Тип:&lt;/b&gt; <xsl:value-of select="*[local-name()='type']"/>&lt;br/&gt;
+        <xsl:param name="cacheCode"/>
+        <xsl:param name="cacheDate"/>
+        &lt;style&gt;
+        .green { color: green }
+        .peru { color: peru }
+        .red { color: red }
+        .grey { color: grey }
+        .blue { color: blue }
+        .skyblue { color: skyblue }
+        .orange { color: orange }
+        .saddlebrown { color: saddlebrown }
+        .yellow { color: yellow }
+        .cache-type { font-weight: bold }
+        &lt;/style&gt;
+        &lt;b&gt;Тип:&lt;/b&gt;<xsl:text> </xsl:text>
+        <xsl:call-template name="outputCacheType">
+            <xsl:with-param name="code" select="$cacheCode"/>
+            <xsl:with-param name="type" select="*[local-name()='type']"/>
+        </xsl:call-template>
+        &lt;br/&gt;
+        &lt;b&gt;Создан:&lt;/b&gt;
+        <xsl:call-template name="dateOnly">
+            <xsl:with-param name="value" select="$cacheDate"/>
+        </xsl:call-template>
+        &lt;br/&gt;
         &lt;b&gt;Автор:&lt;/b&gt; <xsl:value-of select="*[local-name()='owner']"/>&lt;br/&gt;
         &lt;b&gt;Доступность:&lt;/b&gt;
         <xsl:value-of select="*[local-name()='difficulty']"/> из 5&lt;br/&gt;
@@ -230,6 +251,73 @@
         <xsl:param name="color"/>
         <xsl:param name="label"/>
         &lt;span class="log-type <xsl:value-of select="$color"/>"&gt;<xsl:value-of select="$label"/>&lt;/span&gt;
+    </xsl:template>
+
+    <xsl:template name="outputCacheType">
+        <xsl:param name="code"/>
+        <xsl:param name="type"/>
+        <xsl:choose>
+            <xsl:when test="starts-with($code, 'TR')">
+                <xsl:call-template name="cacheTypeSpan">
+                    <xsl:with-param name="color" select="'peru'"/>
+                    <xsl:with-param name="label" select="'Традиционный'"/>
+                </xsl:call-template>
+            </xsl:when>
+            <xsl:when test="starts-with($code, 'MS')">
+                <xsl:call-template name="cacheTypeSpan">
+                    <xsl:with-param name="color" select="'green'"/>
+                    <xsl:with-param name="label" select="'Пошаговый традиционный'"/>
+                </xsl:call-template>
+            </xsl:when>
+            <xsl:when test="starts-with($code, 'LT')">
+                <xsl:call-template name="cacheTypeSpan">
+                    <xsl:with-param name="color" select="'blue'"/>
+                    <xsl:with-param name="label" select="'Логический традиционный'"/>
+                </xsl:call-template>
+            </xsl:when>
+            <xsl:when test="starts-with($code, 'VI')">
+                <xsl:call-template name="cacheTypeSpan">
+                    <xsl:with-param name="color" select="'orange'"/>
+                    <xsl:with-param name="label" select="'Виртуальный'"/>
+                </xsl:call-template>
+            </xsl:when>
+            <xsl:when test="starts-with($code, 'MV')">
+                <xsl:call-template name="cacheTypeSpan">
+                    <xsl:with-param name="color" select="'grey'"/>
+                    <xsl:with-param name="label" select="'Пошаговый виртуальный'"/>
+                </xsl:call-template>
+            </xsl:when>
+            <xsl:when test="starts-with($code, 'LV')">
+                <xsl:call-template name="cacheTypeSpan">
+                    <xsl:with-param name="color" select="'saddlebrown'"/>
+                    <xsl:with-param name="label" select="'Логический виртуальный'"/>
+                </xsl:call-template>
+            </xsl:when>
+            <xsl:when test="starts-with($code, 'EV')">
+                <xsl:call-template name="cacheTypeSpan">
+                    <xsl:with-param name="color" select="'skyblue'"/>
+                    <xsl:with-param name="label" select="'Встреча'"/>
+                </xsl:call-template>
+            </xsl:when>
+            <xsl:when test="starts-with($code, 'CT')">
+                <xsl:call-template name="cacheTypeSpan">
+                    <xsl:with-param name="color" select="'yellow'"/>
+                    <xsl:with-param name="label" select="'Конкрус'"/>
+                </xsl:call-template>
+            </xsl:when>
+            <xsl:otherwise>
+                <xsl:call-template name="cacheTypeSpan">
+                    <xsl:with-param name="color" select="'red'"/>
+                    <xsl:with-param name="label" select="$type"/>
+                </xsl:call-template>
+            </xsl:otherwise>
+        </xsl:choose>
+    </xsl:template>
+
+    <xsl:template name="cacheTypeSpan">
+        <xsl:param name="color"/>
+        <xsl:param name="label"/>
+        &lt;span class="cache-type <xsl:value-of select="$color"/>"&gt;<xsl:value-of select="$label"/>&lt;/span&gt;
     </xsl:template>
 
 </xsl:stylesheet>
