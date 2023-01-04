@@ -84,20 +84,26 @@
     </xsl:template>
 
     <xsl:template name="logs">
+        &lt;style&gt;
+            .log { border: 1px solid; padding: 4px; margin: 4px 0; border-radius: 6px }
+            .log > div { display: table; width: 100% }
+            .log > div > div { display: table-cell }
+            .log > div:nth-of-type(1) > div:nth-of-type(2) { text-align: right }
+        &lt;/style&gt;
         <xsl:for-each select="*[local-name()='logs']/*[local-name()='log']">
-            &lt;div style=&quot;border: 1px solid; padding: 4px; margin: 4px 0; border-radius: 6px&quot;&gt;
-                &lt;div style=&quot;display: table; width: 100%&quot;&gt;
-                    &lt;div style=&quot;display: table-cell&quot;&gt;
+            &lt;div class=&quot;log&quot;&gt;
+                &lt;div&gt;
+                    &lt;div&gt;
                         <xsl:value-of select="*[local-name()='type']"/> &lt;b&gt;<xsl:value-of select="*[local-name()='finder']"/>&lt;/b&gt;
-                &lt;/div&gt;
-                    &lt;div style=&quot;display: table-cell; text-align: right&quot;&gt;
-                        <xsl:call-template name="dateTime">
-                            <xsl:with-param name="value" select="*[local-name()='date']"/>
-                        </xsl:call-template>
+                    &lt;/div&gt;
+                    &lt;div&gt;
+                    <xsl:call-template name="dateTime">
+                        <xsl:with-param name="value" select="*[local-name()='date']"/>
+                    </xsl:call-template>
                     &lt;/div&gt;
                 &lt;/div&gt;
-                &lt;div style=&quot;display: table; width: 100%&quot;&gt;
-                    &lt;div style=&quot;display: table-cell&quot;&gt;
+                &lt;div&gt;
+                    &lt;div&gt;
                         <xsl:value-of select="*[local-name()='text']"/>
                     &lt;/div&gt;
                 &lt;/div&gt;
