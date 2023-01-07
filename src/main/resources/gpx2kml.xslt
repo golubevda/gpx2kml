@@ -3,10 +3,19 @@
                 xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
     <xsl:output method="xml" encoding="UTF-8"/>
 
+    <xsl:param name="docName"/>
+
     <xsl:template match="/">
         <kml xmlns="http://www.opengis.net/kml/2.2">
             <Document id="caches">
-                <name>Тайники</name>
+                <name>
+                    <xsl:choose>
+                        <xsl:when test="$docName">
+                            <xsl:value-of select="$docName"/>
+                        </xsl:when>
+                        <xsl:otherwise>Тайники</xsl:otherwise>
+                    </xsl:choose>
+                </name>
                 <Folder>
                     <name>Caches</name>
                     <xsl:for-each
