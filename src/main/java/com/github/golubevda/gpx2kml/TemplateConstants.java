@@ -7,9 +7,9 @@ import net.sf.saxon.s9api.QName;
  */
 public interface TemplateConstants {
 
-    String NS_EXTENSION = "http://geocaching.example.org";
+    String NS_EXTENSION = "http://gpx2kml.golubevda.github.com";
 
     QName QNAME_REPLACE_COORDINATES_FUNCTION = new QName(NS_EXTENSION, "replaceCoordinates");
 
-    QName PARAM_DOC_NAME = new QName(NS_EXTENSION, "docName");
+    QName PARAM_DOC_NAME = QName.fromClarkName("docName");
 }
