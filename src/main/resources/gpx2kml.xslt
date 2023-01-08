@@ -1,6 +1,7 @@
 <?xml version="1.0"?>
 <xsl:stylesheet version="3.0"
-                xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
+                xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
+                xmlns:gec="http://geocaching.example.org">
     <xsl:output method="xml" encoding="UTF-8"/>
 
     <xsl:param name="docName"/>
@@ -80,7 +81,7 @@
         </xsl:for-each>
         &lt;/p&gt;
         &lt;p&gt;
-        <xsl:call-template name="imgToLinks">
+        <xsl:call-template name="outputProcessedDescription">
             <xsl:with-param name="text" select="*[local-name()='cache']/*[local-name()='long_description']"/>
         </xsl:call-template>
         &lt;/p&gt;
@@ -119,7 +120,7 @@
                         &lt;/div&gt;
                         &lt;div&gt;
                             &lt;div&gt;
-                                <xsl:value-of select="*[local-name()='text']"/>
+                                <xsl:value-of select="gec:replaceCoordinates(*[local-name()='text'])"/>
                             &lt;/div&gt;
                         &lt;/div&gt;
                     &lt;/div&gt;
@@ -202,10 +203,11 @@
         <xsl:value-of select="$day"/>.<xsl:value-of select="$month"/>.<xsl:value-of select="$year"/>
     </xsl:template>
 
-    <xsl:template name="imgToLinks">
+    <xsl:template name="outputProcessedDescription">
         <xsl:param name="text"/>
-        <xsl:value-of
+        <xsl:variable name="preprocessedText"
                 select="replace($text, '&lt;\s*img.*?src=&quot;(.*?/photos/.*?)&quot;.*?\s+alt=&quot;(.*?)&quot;.*?&gt;', '&lt;p&gt;&lt;a href=&quot;$1&quot;&gt;[ФОТО] $2&lt;/a&gt;&lt;/p&gt;', 's')"/>
+        <xsl:value-of select="gec:replaceCoordinates($preprocessedText)"/>
     </xsl:template>
 
     <xsl:template name="outputLogType">
