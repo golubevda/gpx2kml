@@ -12,7 +12,12 @@ public class Application {
 
     public static void main(String[] args) throws Exception {
         final Parameters params = new Parameters();
-        JCommander.newBuilder().addObject(params).args(args).build();
+        final JCommander jCommander = JCommander.newBuilder().addObject(params).args(args).build();
+
+        if (params.isHelp()) {
+            jCommander.usage();
+            return;
+        }
 
         LogUtils.setLevel(params.isVerbose() ? Level.ALL : Level.OFF);
 
