@@ -8,7 +8,7 @@ import net.sf.saxon.om.StructuredQName;
 import net.sf.saxon.trans.XPathException;
 import net.sf.saxon.value.SequenceType;
 import net.sf.saxon.value.StringValue;
-import org.example.geocaching.UrlAlg;
+import org.example.geocaching.OMUrlGenerator;
 import org.example.geocaching.util.RegexGroupReplacer;
 
 import java.util.regex.Pattern;
@@ -36,7 +36,7 @@ public class TextCoordinatesReplacer extends ExtensionFunctionDefinition {
         System.out.println("WGS84 coordinates pattern is: " + WGS84_COORDS_PATTERN);
     }
 
-    private final UrlAlg alg = new UrlAlg();
+    private final OMUrlGenerator alg = new OMUrlGenerator();
 
     @Override
     public StructuredQName getFunctionQName() {
