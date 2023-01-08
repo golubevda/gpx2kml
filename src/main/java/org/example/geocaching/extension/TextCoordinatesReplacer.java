@@ -10,14 +10,18 @@ import net.sf.saxon.value.SequenceType;
 import net.sf.saxon.value.StringValue;
 import org.example.geocaching.OMUrlGenerator;
 import org.example.geocaching.TemplateConstants;
+import org.example.geocaching.util.LogUtils;
 import org.example.geocaching.util.RegexGroupReplacer;
 
+import java.util.logging.Logger;
 import java.util.regex.Pattern;
 
 /**
  * @author Dmitry Golubev
  */
 public class TextCoordinatesReplacer extends ExtensionFunctionDefinition {
+
+    private static final Logger logger = LogUtils.getLogger(TextCoordinatesReplacer.class);
 
     private static final String DEG_FRAG = "\\d{1,2}";
     public static final String DEG_SIGN_FRAG = "(?:[°0]|гр)?";
@@ -34,7 +38,7 @@ public class TextCoordinatesReplacer extends ExtensionFunctionDefinition {
             Pattern.CASE_INSENSITIVE | Pattern.MULTILINE
     );
     static {
-        System.out.println("WGS84 coordinates pattern is: " + WGS84_COORDS_PATTERN);
+        logger.fine("WGS84 coordinates pattern is: " + WGS84_COORDS_PATTERN);
     }
 
     private final OMUrlGenerator alg = new OMUrlGenerator();

@@ -16,6 +16,9 @@ public class Parameters {
     @Parameter(names = {"-dn", "--doc-name"}, description = "Имя коллекции точек")
     private String docName;
 
+    @Parameter(names = {"-v", "--verbose"}, description = "Вывод отладочной информации")
+    private boolean verbose;
+
     public String getInputFile() {
         return inputFile;
     }
@@ -26,5 +29,9 @@ public class Parameters {
 
     public String getDocName() {
         return docName;
+    }
+
+    public boolean isVerbose() {
+        return verbose;
     }
 }
