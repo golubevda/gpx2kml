@@ -9,6 +9,7 @@ import net.sf.saxon.trans.XPathException;
 import net.sf.saxon.value.SequenceType;
 import net.sf.saxon.value.StringValue;
 import org.example.geocaching.OMUrlGenerator;
+import org.example.geocaching.TemplateConstants;
 import org.example.geocaching.util.RegexGroupReplacer;
 
 import java.util.regex.Pattern;
@@ -40,7 +41,7 @@ public class TextCoordinatesReplacer extends ExtensionFunctionDefinition {
 
     @Override
     public StructuredQName getFunctionQName() {
-        return StructuredQName.fromClarkName("{http://geocaching.example.org}replaceCoordinates");
+        return TemplateConstants.QNAME_REPLACE_COORDINATES_FUNCTION.getStructuredQName();
     }
 
     @Override

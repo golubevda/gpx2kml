@@ -8,6 +8,9 @@ import java.io.*;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Map;
+import java.util.Objects;
+
+import static org.example.geocaching.TemplateConstants.*;
 
 /**
  * @author Dmitry Golubev
@@ -22,7 +25,9 @@ public class Gpx2KmlConverter {
         PROCESSOR = new Processor(false);
         PROCESSOR.registerExtensionFunction(new TextCoordinatesReplacer());
         final XsltCompiler compiler = PROCESSOR.newXsltCompiler();
-        try (InputStream xsltStream = new BufferedInputStream(Gpx2KmlConverter.class.getResourceAsStream("/gpx2kml.xslt"))) {
+
+        final String xsltResourcePath = "/gpx2kml.xslt";
+        try (InputStream xsltStream = new BufferedInputStream(Objects.requireNonNull(Gpx2KmlConverter.class.getResourceAsStream(xsltResourcePath)))) {
             XSLT_EXECUTABLE = compiler.compile(new StreamSource(xsltStream));
         } catch (Exception e) {
             throw new RuntimeException("Failed to compile XSLT document", e);
@@ -57,7 +62,7 @@ public class Gpx2KmlConverter {
             Destination destination = null;
             try {
                 final Xslt30Transformer transformer = XSLT_EXECUTABLE.load30();
-                transformer.setStylesheetParameters(Map.of(QName.fromClarkName("docName"), XdmValue.makeValue(docName)));
+                transformer.setStylesheetParameters(Map.of(PARAM_DOC_NAME, XdmValue.makeValue(docName)));
 
                 destination = PROCESSOR.newSerializer(outputFile);
                 transformer.transform(new StreamSource(gpxStream), destination);
