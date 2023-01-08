@@ -26,11 +26,11 @@ public class TextCoordinatesReplacer extends ExtensionFunctionDefinition {
 
     public static final Pattern WGS84_COORDS_PATTERN = Pattern.compile(
             /* фрагмент широты */
-            "([NS])\\s*(" + DEG_FRAG + ")\\s*" + DEG_SIGN_FRAG + "\\s*0*(" + MIN_FRAG + ")\\s*" + MIN_SIGN_FRAG + "?" +
+            "([NS])\\s*0*(" + DEG_FRAG + ")\\s*" + DEG_SIGN_FRAG + "\\s*0*(" + MIN_FRAG + ")\\s*" + MIN_SIGN_FRAG + "?" +
                     /* фрагмент в тексте между широтой и долготой */
                     "\\s*,?\\s*(?:<\\s*br\\s*/?\\s*>)?\\s*" +
                     /* фрагмент долготы */
-                    "([EW])\\s*0*(" + DEG_FRAG + ")\\s*" + DEG_SIGN_FRAG + "\\s*(" + MIN_FRAG + ")(?:\\s*" + MIN_SIGN_FRAG + ")?",
+                    "([EW])\\s*0*(" + DEG_FRAG + ")\\s*" + DEG_SIGN_FRAG + "\\s*0*(" + MIN_FRAG + ")(?:\\s*" + MIN_SIGN_FRAG + ")?",
             Pattern.CASE_INSENSITIVE | Pattern.MULTILINE
     );
     static {
