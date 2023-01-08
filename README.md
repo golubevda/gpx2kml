@@ -19,7 +19,7 @@
 ## Сборка исполняемого JAR (TODO)
 
 ## Запуск конвертации
-[Скачать последний релиз](/webres/gpx2kml-1.0-SNAPSHOT.jar) или собрать исполняемый jar из исходного кода самостоятельно
+[Скачать последний релиз](https://github.com/golubevda/gpx2kml/raw/develop/webres/gpx2kml-1.0-SNAPSHOT.jar) или собрать исполняемый jar из исходного кода самостоятельно
 
 Для запуска вам понадобится [Java не ниже 11](https://www.java.com/ru/download)
 
