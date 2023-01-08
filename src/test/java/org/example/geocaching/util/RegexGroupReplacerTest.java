@@ -33,6 +33,8 @@ class RegexGroupReplacerTest {
         variants.add("N50 гр 04.782 мин <br/> E85гр08.041мин");
         variants.add("N 51гр 21.318, E84 гр 33.507");
         variants.add("N 50 21.768   E 87 38.000");
+        variants.add("N50°4.782' E85°8.041'");
+        variants.add("S4°4.782' W7°8.041'");
 
         TEST_TEXT = buildString(variants);
         EXPECTED_TEXT = buildString(variants.stream().map(variant -> "[" + variant + "]").collect(Collectors.toList()));

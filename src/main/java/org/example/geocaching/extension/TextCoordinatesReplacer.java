@@ -18,16 +18,18 @@ import java.util.regex.Pattern;
  */
 public class TextCoordinatesReplacer extends ExtensionFunctionDefinition {
 
-    public static final String DEGREES_FRAGMENT = "(?:[°0]|гр)?";
-    public static final String MINUTES_FRAGMENT = "(?:'|мин)";
+    private static final String DEG_FRAG = "\\d{1,2}";
+    public static final String DEG_SIGN_FRAG = "(?:[°0]|гр)?";
+    private static final String MIN_FRAG = "\\d{1,2}[.,]\\d+";
+    public static final String MIN_SIGN_FRAG = "(?:'|мин)";
 
     public static final Pattern WGS84_COORDS_PATTERN = Pattern.compile(
             /* фрагмент широты */
-            "([NS])\\s*(\\d{2})\\s*" + DEGREES_FRAGMENT + "\\s*0*(\\d{2}[.,]\\d{3,})\\s*" + MINUTES_FRAGMENT + "?" +
+            "([NS])\\s*(" + DEG_FRAG + ")\\s*" + DEG_SIGN_FRAG + "\\s*0*(" + MIN_FRAG + ")\\s*" + MIN_SIGN_FRAG + "?" +
                     /* фрагмент в тексте между широтой и долготой */
                     "\\s*,?\\s*(?:<\\s*br\\s*/?\\s*>)?\\s*" +
                     /* фрагмент долготы */
-                    "([EW])\\s*0*(\\d{2})\\s*" + DEGREES_FRAGMENT + "\\s*(\\d{2}[.,]\\d{3,})(?:\\s*" + MINUTES_FRAGMENT + ")?",
+                    "([EW])\\s*0*(" + DEG_FRAG + ")\\s*" + DEG_SIGN_FRAG + "\\s*(" + MIN_FRAG + ")(?:\\s*" + MIN_SIGN_FRAG + ")?",
             Pattern.CASE_INSENSITIVE | Pattern.MULTILINE
     );
     static {
