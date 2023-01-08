@@ -1,5 +1,6 @@
-package org.example.geocaching;
+package com.github.golubevda.gpx2kml;
 
+import com.github.golubevda.gpx2kml.OMUrlGenerator;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 

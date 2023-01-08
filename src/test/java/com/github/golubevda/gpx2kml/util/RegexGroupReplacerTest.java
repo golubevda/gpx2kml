@@ -1,12 +1,12 @@
-package org.example.geocaching.util;
+package com.github.golubevda.gpx2kml.util;
 
-import org.example.geocaching.extension.TextCoordinatesReplacer;
+import com.github.golubevda.gpx2kml.extension.TextCoordinatesReplacer;
+import com.github.golubevda.gpx2kml.util.RegexGroupReplacer;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 /**

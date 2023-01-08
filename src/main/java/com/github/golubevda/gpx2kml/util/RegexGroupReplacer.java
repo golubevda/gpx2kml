@@ -1,4 +1,4 @@
-package org.example.geocaching.util;
+package com.github.golubevda.gpx2kml.util;
 
 import java.util.ArrayList;
 import java.util.List;

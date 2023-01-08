@@ -1,7 +1,7 @@
-package org.example.geocaching;
+package com.github.golubevda.gpx2kml;
 
 import net.sf.saxon.s9api.*;
-import org.example.geocaching.extension.TextCoordinatesReplacer;
+import com.github.golubevda.gpx2kml.extension.TextCoordinatesReplacer;
 
 import javax.xml.transform.stream.StreamSource;
 import java.io.*;
@@ -10,7 +10,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.Map;
 import java.util.Objects;
 
-import static org.example.geocaching.TemplateConstants.*;
+import static com.github.golubevda.gpx2kml.TemplateConstants.*;
 
 /**
  * @author Dmitry Golubev

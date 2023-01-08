@@ -1,7 +1,7 @@
-package org.example.geocaching;
+package com.github.golubevda.gpx2kml;
 
 import com.beust.jcommander.JCommander;
-import org.example.geocaching.util.LogUtils;
+import com.github.golubevda.gpx2kml.util.LogUtils;
 
 import java.util.logging.Level;
 

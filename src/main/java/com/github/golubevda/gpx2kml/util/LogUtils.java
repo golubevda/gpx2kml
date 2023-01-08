@@ -1,4 +1,4 @@
-package org.example.geocaching.util;
+package com.github.golubevda.gpx2kml.util;
 
 import java.util.logging.Handler;
 import java.util.logging.Level;

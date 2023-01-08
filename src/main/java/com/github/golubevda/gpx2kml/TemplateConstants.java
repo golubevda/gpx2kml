@@ -1,4 +1,4 @@
-package org.example.geocaching;
+package com.github.golubevda.gpx2kml;
 
 import net.sf.saxon.s9api.QName;
 
