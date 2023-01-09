@@ -1,5 +1,6 @@
 package com.github.golubevda.gpx2kml;
 
+import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 
@@ -22,7 +23,10 @@ public class OMUrlGenerator {
         result.append(coords);
 
         if (!name.isEmpty()) {
-            result.append('/').append(URLEncoder.encode(transformName(name), StandardCharsets.UTF_8));
+            try {
+                result.append('/').append(URLEncoder.encode(transformName(name), "UTF-8"));
+            } catch (UnsupportedEncodingException ignored) {
+            }
         }
 
         return result.toString();
