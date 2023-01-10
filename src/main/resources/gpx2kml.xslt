@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <xsl:stylesheet version="3.0"
                 xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
-                xmlns:gec="http://gpx2kml.golubevda.github.com">
+                xmlns:gec="https://github.com/golubevda/gpx2kml">
     <xsl:output method="xml" encoding="UTF-8"/>
 
     <xsl:param name="docName"/>
