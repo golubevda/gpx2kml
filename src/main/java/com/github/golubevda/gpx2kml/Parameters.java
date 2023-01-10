@@ -7,7 +7,10 @@ import com.beust.jcommander.Parameter;
  */
 public class Parameters {
 
-    @Parameter(required = true, description = "Путь до исходного файла *.gpx")
+    @Parameter(names = {"-h", "-help", "--help"}, help = true, description = "Вывести эту справку и завершиться")
+    private boolean help;
+
+    @Parameter(required = true, description = "путь_до_исходного_файла_gpx")
     private String inputFile;
 
     @Parameter(names = {"-o", "--output"}, description = "Путь для выгрузки файла *.kml")
@@ -18,6 +21,10 @@ public class Parameters {
 
     @Parameter(names = {"-v", "--verbose"}, description = "Вывод отладочной информации")
     private boolean verbose;
+
+    public boolean isHelp() {
+        return help;
+    }
 
     public String getInputFile() {
         return inputFile;

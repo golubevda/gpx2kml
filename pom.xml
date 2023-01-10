@@ -6,13 +6,17 @@
 
     <groupId>com.github.golubevda</groupId>
     <artifactId>gpx2kml</artifactId>
-    <version>1.0-SNAPSHOT</version>
-    <name>GPX-2-KML</name>
+    <version>1.0</version>
+    <name>GPX2KML</name>
     <description>Converts *.gpx files exported from geocaching.su game service to *.kml files supported by MAPS.ME and Organic Maps</description>
 
+    <scm>
+        <url>https://github.com/golubevda/gpx2kml</url>
+    </scm>
+
     <properties>
-        <maven.compiler.source>11</maven.compiler.source>
-        <maven.compiler.target>11</maven.compiler.target>
+        <maven.compiler.source>8</maven.compiler.source>
+        <maven.compiler.target>8</maven.compiler.target>
     </properties>
 
     <build>
@@ -44,6 +48,22 @@
                         </configuration>
                     </execution>
                 </executions>
+            </plugin>
+            <plugin>
+                <groupId>com.amashchenko.maven.plugin</groupId>
+                <artifactId>gitflow-maven-plugin</artifactId>
+                <version>1.19.0</version>
+                <configuration>
+                    <gitFlowConfig>
+                        <productionBranch>main</productionBranch>
+                        <developmentBranch>develop</developmentBranch>
+                        <releaseBranchPrefix>release/</releaseBranchPrefix>
+                        <hotfixBranchPrefix>hotfix/</hotfixBranchPrefix>
+                        <origin>origin</origin>
+                    </gitFlowConfig>
+                    <pushRemote>false</pushRemote>
+                    <versionDigitToIncrement>0</versionDigitToIncrement>
+                </configuration>
             </plugin>
         </plugins>
     </build>

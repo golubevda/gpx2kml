@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <xsl:stylesheet version="3.0"
                 xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
-                xmlns:gec="http://geocaching.example.org">
+                xmlns:gec="https://github.com/golubevda/gpx2kml">
     <xsl:output method="xml" encoding="UTF-8"/>
 
     <xsl:param name="docName"/>
@@ -84,6 +84,13 @@
         <xsl:call-template name="outputProcessedDescription">
             <xsl:with-param name="text" select="*[local-name()='cache']/*[local-name()='long_description']"/>
         </xsl:call-template>
+        &lt;/p&gt;
+        &lt;p&gt;
+        <xsl:analyze-string select="(*[local-name()='url'])" regex="(?&lt;=[\?&amp;]cid=)\d+" flags=";j">
+            <xsl:matching-substring>
+                &lt;a href="https://geocaching.su/showmemphotos.php?cid=<xsl:value-of select="."/>"&gt;Фотоальбом тайника&lt;/a&gt;
+            </xsl:matching-substring>
+        </xsl:analyze-string>
         &lt;/p&gt;
         &lt;p&gt;
         &lt;b&gt;Записи в блокноте тайника&lt;/b&gt;

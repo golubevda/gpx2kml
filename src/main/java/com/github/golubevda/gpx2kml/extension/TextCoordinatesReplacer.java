@@ -78,13 +78,17 @@ public class TextCoordinatesReplacer extends ExtensionFunctionDefinition {
                             lonChar, lonDeg, lonMin
                     );
 
-                    // В формате опущен символ минут ('), т.к. такие имена не работают в https://omaps.app
-                    final String label = String.format("%s %02d° %.3f %s %02d° %.3f",
+                    // В формате для имени в ссылке опущен символ минут ('), т.к. такие имена не работают в https://omaps.app
+                    final String hrefLabel = String.format("%s %02d° %.3f %s %02d° %.3f",
                             latChar.toUpperCase(), latDeg, latMin,
                             lonChar.toUpperCase(), lonDeg, lonMin
                     );
-                    final String href = alg.generateShortShowMapUrl(coordsDD.lat, coordsDD.lon, 20, label);
-                    return String.format("<a href=\"%s\">%s</a>", href, label);
+                    final String textLabel = String.format("%s %02d° %.3f' %s %02d° %.3f'",
+                            latChar.toUpperCase(), latDeg, latMin,
+                            lonChar.toUpperCase(), lonDeg, lonMin
+                    );
+                    final String href = alg.generateShortShowMapUrl(coordsDD.lat, coordsDD.lon, 20, hrefLabel);
+                    return String.format("<a href=\"%s\">%s</a>", href, textLabel);
                 }).replace(text);
 
                 return StringValue.makeStringValue(processedText);

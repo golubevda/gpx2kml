@@ -7,6 +7,7 @@ import javax.xml.transform.stream.StreamSource;
 import java.io.*;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Collections;
 import java.util.Map;
 import java.util.Objects;
 
@@ -44,12 +45,12 @@ public class Gpx2KmlConverter {
         }
 
         String docName = params.getDocName();
-        if (docName == null || docName.trim().isBlank()) {
+        if (docName == null || docName.trim().isEmpty()) {
             docName = getDefaultDocName();
         }
 
         File outputFile;
-        if (params.getOutputPath() != null && !params.getOutputPath().trim().isBlank()) {
+        if (params.getOutputPath() != null && !params.getOutputPath().trim().isEmpty()) {
             outputFile = new File(params.getOutputPath());
             if (outputFile.exists() && outputFile.isDirectory()) {
                 throw new IllegalArgumentException("Output file " + outputFile.getAbsolutePath() + " is a directory");
@@ -62,7 +63,7 @@ public class Gpx2KmlConverter {
             Destination destination = null;
             try {
                 final Xslt30Transformer transformer = XSLT_EXECUTABLE.load30();
-                transformer.setStylesheetParameters(Map.of(PARAM_DOC_NAME, XdmValue.makeValue(docName)));
+                transformer.setStylesheetParameters(Collections.singletonMap(PARAM_DOC_NAME, XdmValue.makeValue(docName)));
 
                 destination = PROCESSOR.newSerializer(outputFile);
                 transformer.transform(new StreamSource(gpxStream), destination);
