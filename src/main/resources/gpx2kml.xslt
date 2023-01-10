@@ -86,6 +86,13 @@
         </xsl:call-template>
         &lt;/p&gt;
         &lt;p&gt;
+        <xsl:analyze-string select="(*[local-name()='url'])" regex="(?&lt;=[\?&amp;]cid=)\d+" flags=";j">
+            <xsl:matching-substring>
+                &lt;a href="https://geocaching.su/showmemphotos.php?cid=<xsl:value-of select="."/>"&gt;Фотоальбом тайника&lt;/a&gt;
+            </xsl:matching-substring>
+        </xsl:analyze-string>
+        &lt;/p&gt;
+        &lt;p&gt;
         &lt;b&gt;Записи в блокноте тайника&lt;/b&gt;
         &lt;/p&gt;
         <xsl:for-each select="*[local-name()='cache']">
