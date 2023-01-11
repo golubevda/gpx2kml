@@ -30,7 +30,7 @@ public class Coordinates2LinksReplacer extends ExtensionFunctionDefinition {
     private static final String MIN_FRAG = "\\d{1,2}[.,]\\d+";
     private static final String MIN_SIGN_FRAG = "(?:'|мин)";
 
-    private static final LinkType DEFAULT_LINK_TYPE = LinkType.OM;
+    private static final LinkType DEFAULT_LINK_TYPE = LinkType.GE0;
 
     public static final Pattern WGS84_COORDS_PATTERN = Pattern.compile(
             /* фрагмент широты */

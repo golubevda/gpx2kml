@@ -20,7 +20,7 @@ public class Parameters {
     private String docName;
 
     @Parameter(names = {"-glt", "--geo-links-type"}, description = "Тип генерируемых ссылок для координат")
-    private LinkType geoLinkType = LinkType.OM;
+    private LinkType geoLinkType = LinkType.GE0;
 
     @Parameter(names = {"-v", "--verbose"}, description = "Вывод отладочной информации")
     private boolean verbose;
