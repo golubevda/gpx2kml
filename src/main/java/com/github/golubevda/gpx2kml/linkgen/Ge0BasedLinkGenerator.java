@@ -1,20 +1,26 @@
-package com.github.golubevda.gpx2kml;
+package com.github.golubevda.gpx2kml.linkgen;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
-import java.nio.charset.StandardCharsets;
 
 /**
- * Переписанный на коленке алгоритм https://github.com/organicmaps/organicmaps/blob/master/ge0/url_generator.cpp
+ * @author Dmitry Golubev
  */
-public class OMUrlGenerator {
+public abstract class Ge0BasedLinkGenerator implements GeoLinkGenerator {
 
     private static final int K_MAX_POINT_BYTES = 10;
     private static final int K_MAX_COORD_BITS = K_MAX_POINT_BYTES * 3;
     private static final int LINK_COORDS_PART_LENGTH = 9;
 
-    public String generateShortShowMapUrl(double lat, double lon, double zoom, String name) {
-        final StringBuilder result = new StringBuilder("om://");
+    private final String schemaSuffix;
+
+    public Ge0BasedLinkGenerator(String schemaSuffix) {
+        this.schemaSuffix = schemaSuffix;
+    }
+
+    @Override
+    public String generateLink(double lat, double lon, double zoom, String name) {
+        final StringBuilder result = new StringBuilder(schemaSuffix);
 
         final int zoomI = zoom <= 4 ? 0 : (zoom >= 19.75 ? 63 : (int) ((zoom - 4) * 4));
         result.append(base64Char(zoomI));

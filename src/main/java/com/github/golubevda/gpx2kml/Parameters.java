@@ -19,6 +19,9 @@ public class Parameters {
     @Parameter(names = {"-dn", "--doc-name"}, description = "Имя коллекции точек")
     private String docName;
 
+    @Parameter(names = {"-glt", "--geo-links-type"}, description = "Тип генерируемых ссылок для координат")
+    private LinkType geoLinkType = LinkType.OM;
+
     @Parameter(names = {"-v", "--verbose"}, description = "Вывод отладочной информации")
     private boolean verbose;
 
@@ -36,6 +39,10 @@ public class Parameters {
 
     public String getDocName() {
         return docName;
+    }
+
+    public LinkType getGeoLinkType() {
+        return geoLinkType;
     }
 
     public boolean isVerbose() {

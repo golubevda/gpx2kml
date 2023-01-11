@@ -1,7 +1,6 @@
 package com.github.golubevda.gpx2kml.util;
 
-import com.github.golubevda.gpx2kml.extension.TextCoordinatesReplacer;
-import com.github.golubevda.gpx2kml.util.RegexGroupReplacer;
+import com.github.golubevda.gpx2kml.extension.Coordinates2LinksReplacer;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -53,7 +52,7 @@ class RegexGroupReplacerTest {
 
     @Test
     void replace() {
-        final RegexGroupReplacer replacer = new RegexGroupReplacer(TextCoordinatesReplacer.WGS84_COORDS_PATTERN, groups -> "[" + groups.get(0) + "]");
+        final RegexGroupReplacer replacer = new RegexGroupReplacer(Coordinates2LinksReplacer.WGS84_COORDS_PATTERN, groups -> "[" + groups.get(0) + "]");
 
         Assertions.assertEquals(EXPECTED_TEXT, replacer.replace(TEST_TEXT));
     }

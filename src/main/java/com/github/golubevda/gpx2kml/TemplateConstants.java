@@ -12,4 +12,5 @@ public interface TemplateConstants {
     QName QNAME_REPLACE_COORDINATES_FUNCTION = new QName(NS_EXTENSION, "replaceCoordinates");
 
     QName PARAM_DOC_NAME = QName.fromClarkName("docName");
+    QName PARAM_GEO_LINK_TYPE = QName.fromClarkName("geoLinkType");
 }

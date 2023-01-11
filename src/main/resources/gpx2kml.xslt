@@ -5,6 +5,7 @@
     <xsl:output method="xml" encoding="UTF-8"/>
 
     <xsl:param name="docName"/>
+    <xsl:param name="geoLinkType"/>
 
     <xsl:template match="/">
         <kml xmlns="http://www.opengis.net/kml/2.2">
@@ -127,7 +128,7 @@
                         &lt;/div&gt;
                         &lt;div&gt;
                             &lt;div&gt;
-                                <xsl:value-of select="gec:replaceCoordinates(*[local-name()='text'])"/>
+                                <xsl:value-of select="gec:replaceCoordinates(*[local-name()='text'], $geoLinkType)"/>
                             &lt;/div&gt;
                         &lt;/div&gt;
                     &lt;/div&gt;
@@ -214,7 +215,7 @@
         <xsl:param name="text"/>
         <xsl:variable name="preprocessedText"
                 select="replace($text, '&lt;\s*img.*?src=&quot;(.*?/photos/.*?)&quot;.*?\s+alt=&quot;(.*?)&quot;.*?&gt;', '&lt;p&gt;&lt;a href=&quot;$1&quot;&gt;[ФОТО] $2&lt;/a&gt;&lt;/p&gt;', 's')"/>
-        <xsl:value-of select="gec:replaceCoordinates($preprocessedText)"/>
+        <xsl:value-of select="gec:replaceCoordinates($preprocessedText, $geoLinkType)"/>
     </xsl:template>
 
     <xsl:template name="outputLogType">
