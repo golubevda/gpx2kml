@@ -269,7 +269,7 @@
             <xsl:when test="$type='Write note'">
                 <xsl:call-template name="logTypeSpan">
                     <xsl:with-param name="color" select="'grey'"/>
-                    <xsl:with-param name="label" select="'&#128393;'"/>
+                    <xsl:with-param name="label" select="'&#128394;'"/>
                 </xsl:call-template>
             </xsl:when>
             <xsl:when test="$type='Didn''t find it'">
