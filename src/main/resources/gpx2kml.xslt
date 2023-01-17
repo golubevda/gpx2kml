@@ -42,7 +42,10 @@
                 <xsl:value-of select="*[local-name()='desc']"/>
             </name>
             <description>
-                <xsl:call-template name="description"/>
+                <xsl:call-template name="description">
+                    <xsl:with-param name="cacheLat" select="@lat"/>
+                    <xsl:with-param name="cacheLon" select="@lon"/>
+                </xsl:call-template>
             </description>
             <Point>
                 <coordinates>
@@ -69,10 +72,17 @@
     </xsl:template>
 
     <xsl:template name="description">
+        <xsl:param name="cacheLat"/>
+        <xsl:param name="cacheLon"/>
+
         <xsl:variable name="cacheCode" select="*[local-name()='name']"/>
         <xsl:variable name="cacheDate" select="*[local-name()='time']"/>
-        &lt;a href=&quot;<xsl:value-of select="(*[local-name()='url'])"/>&quot;&gt;[<xsl:value-of select="$cacheCode"/>]
-        <xsl:value-of select="*[local-name()='desc']"/>&lt;/a&gt;
+        <xsl:variable name="cacheName" select="concat('[', $cacheCode, '] ', *[local-name()='desc'])"/>
+
+        <xsl:call-template name="anchor">
+            <xsl:with-param name="href" select="(*[local-name()='url'])"/>
+            <xsl:with-param name="label" select="$cacheName"/>
+        </xsl:call-template>
         &lt;p&gt;
         <xsl:for-each select="*[local-name()='cache']">
             <xsl:call-template name="descHeader">
@@ -82,6 +92,14 @@
         </xsl:for-each>
         &lt;/p&gt;
         &lt;p&gt;
+        Показать в:
+        <xsl:call-template name="outputCoordinatesLinks">
+            <xsl:with-param name="lat" select="$cacheLat"/>
+            <xsl:with-param name="lon" select="$cacheLon"/>
+            <xsl:with-param name="name" select="$cacheName"/>
+        </xsl:call-template>
+        &lt;/p&gt;
+        &lt;p&gt;
         <xsl:call-template name="outputProcessedDescription">
             <xsl:with-param name="text" select="*[local-name()='cache']/*[local-name()='long_description']"/>
         </xsl:call-template>
@@ -89,7 +107,10 @@
         &lt;p&gt;
         <xsl:analyze-string select="(*[local-name()='url'])" regex="(?&lt;=[\?&amp;]cid=)\d+" flags=";j">
             <xsl:matching-substring>
-                &lt;a href="https://geocaching.su/showmemphotos.php?cid=<xsl:value-of select="."/>"&gt;Фотоальбом тайника&lt;/a&gt;
+                <xsl:call-template name="anchor">
+                    <xsl:with-param name="href" select="concat('https://geocaching.su/showmemphotos.php?cid=', .)"/>
+                    <xsl:with-param name="label" select="'Фотоальбом тайника'"/>
+                </xsl:call-template>
             </xsl:matching-substring>
         </xsl:analyze-string>
         &lt;/p&gt;
@@ -337,6 +358,26 @@
         <xsl:param name="color"/>
         <xsl:param name="label"/>
         &lt;span class="cache-type <xsl:value-of select="$color"/>"&gt;<xsl:value-of select="$label"/>&lt;/span&gt;
+    </xsl:template>
+
+    <xsl:template name="outputCoordinatesLinks">
+        <xsl:param name="lat"/>
+        <xsl:param name="lon"/>
+        <xsl:param name="name"/>
+        <xsl:for-each select="('YM', 'GM')">
+            [
+            <xsl:call-template name="anchor">
+                <xsl:with-param name="href" select="gec:coordinatesLink(., $lat, $lon, $name)"/>
+                <xsl:with-param name="label" select="."/>
+            </xsl:call-template>
+            ]
+        </xsl:for-each>
+    </xsl:template>
+
+    <xsl:template name="anchor">
+        <xsl:param name="href"/>
+        <xsl:param name="label"/>
+        &lt;a href=&quot;<xsl:value-of select="$href"/>&quot;&gt;<xsl:value-of select="$label"/>&lt;/a&gt;
     </xsl:template>
 
 </xsl:stylesheet>

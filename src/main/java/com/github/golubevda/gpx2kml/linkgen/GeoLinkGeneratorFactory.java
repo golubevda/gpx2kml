@@ -15,6 +15,8 @@ public class GeoLinkGeneratorFactory {
         GENERATORS.put(LinkType.OM, new OmLinkGenerator());
         GENERATORS.put(LinkType.GE0, new Ge0LinkGenerator());
         GENERATORS.put(LinkType.OMAPS, new OmapsLinkGenerator());
+        GENERATORS.put(LinkType.YM, new YandexMapsLinkGenerator());
+        GENERATORS.put(LinkType.GM, new GoogleMapsLinkGenerator());
     }
 
     public static GeoLinkGenerator createGenerator(LinkType linkType) {

@@ -1,14 +1,11 @@
 package com.github.golubevda.gpx2kml.extension;
 
-import com.github.golubevda.gpx2kml.LinkType;
 import com.github.golubevda.gpx2kml.TemplateConstants;
 import com.github.golubevda.gpx2kml.linkgen.GeoLinkGenerator;
-import com.github.golubevda.gpx2kml.linkgen.GeoLinkGeneratorFactory;
 import com.github.golubevda.gpx2kml.util.LogUtils;
 import com.github.golubevda.gpx2kml.util.RegexGroupReplacer;
 import net.sf.saxon.expr.XPathContext;
 import net.sf.saxon.lib.ExtensionFunctionCall;
-import net.sf.saxon.lib.ExtensionFunctionDefinition;
 import net.sf.saxon.om.Sequence;
 import net.sf.saxon.om.StructuredQName;
 import net.sf.saxon.trans.XPathException;
@@ -21,7 +18,7 @@ import java.util.regex.Pattern;
 /**
  * @author Dmitry Golubev
  */
-public class Coordinates2LinksReplacer extends ExtensionFunctionDefinition {
+public class Coordinates2LinksReplacer extends CoordinatesLinkFunctionBase {
 
     private static final Logger logger = LogUtils.getLogger(Coordinates2LinksReplacer.class);
 
@@ -29,8 +26,6 @@ public class Coordinates2LinksReplacer extends ExtensionFunctionDefinition {
     public static final String DEG_SIGN_FRAG = "(?:[°0]|гр)?";
     private static final String MIN_FRAG = "\\d{1,2}[.,]\\d+";
     private static final String MIN_SIGN_FRAG = "(?:'|мин)";
-
-    private static final LinkType DEFAULT_LINK_TYPE = LinkType.GE0;
 
     public static final Pattern WGS84_COORDS_PATTERN = Pattern.compile(
             /* фрагмент широты */
@@ -79,7 +74,7 @@ public class Coordinates2LinksReplacer extends ExtensionFunctionDefinition {
         return new ExtensionFunctionCall() {
             @Override
             public Sequence call(XPathContext context, Sequence[] arguments) throws XPathException {
-                final GeoLinkGenerator linkGenerator = createLinkGenerator(arguments);
+                final GeoLinkGenerator linkGenerator = createLinkGenerator(arguments, 1);
 
                 final String text = arguments[0].head().getStringValue();
                 final String processedText = new RegexGroupReplacer(WGS84_COORDS_PATTERN, groups -> {
@@ -105,26 +100,13 @@ public class Coordinates2LinksReplacer extends ExtensionFunctionDefinition {
                             latChar.toUpperCase(), latDeg, latMin,
                             lonChar.toUpperCase(), lonDeg, lonMin
                     );
-                    final String href = linkGenerator.generateLink(coordsDD.lat, coordsDD.lon, 20, hrefLabel);
+                    final String href = linkGenerator.generateLink(coordsDD.lat, coordsDD.lon, GeoLinkGenerator.DEFAULT_ZOOM_LEVEL, hrefLabel);
                     return String.format("<a href=\"%s\">%s</a>", href, textLabel);
                 }).replace(text);
 
                 return StringValue.makeStringValue(processedText);
             }
         };
-    }
-
-    private GeoLinkGenerator createLinkGenerator(Sequence[] arguments) throws XPathException {
-        LinkType linkType = DEFAULT_LINK_TYPE;
-        if (arguments.length > 1) {
-            final String linkTypeString = arguments[1].head().getStringValue();
-            try {
-                linkType = LinkType.valueOf(linkTypeString.trim().toUpperCase());
-            } catch (IllegalArgumentException e) {
-                throw new IllegalArgumentException("Unknown link type: " + linkTypeString);
-            }
-        }
-        return GeoLinkGeneratorFactory.createGenerator(linkType);
     }
 
     private CoordsDD wgs84toDD(String latChar, long latDeg, double latMin, String lonChar, long lonDeg, double lonMin) {

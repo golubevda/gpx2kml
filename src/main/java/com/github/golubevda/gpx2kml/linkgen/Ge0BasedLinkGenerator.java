@@ -1,5 +1,7 @@
 package com.github.golubevda.gpx2kml.linkgen;
 
+import com.github.golubevda.gpx2kml.util.StringUtils;
+
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 
@@ -28,7 +30,7 @@ public abstract class Ge0BasedLinkGenerator implements GeoLinkGenerator {
         final String coords = latLonToString(lat, lon);
         result.append(coords);
 
-        if (!name.isEmpty()) {
+        if (!StringUtils.isBlank(name)) {
             try {
                 result.append('/').append(URLEncoder.encode(transformName(name), "UTF-8"));
             } catch (UnsupportedEncodingException ignored) {

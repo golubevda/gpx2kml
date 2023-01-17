@@ -1,6 +1,7 @@
 package com.github.golubevda.gpx2kml;
 
 import com.github.golubevda.gpx2kml.extension.Coordinates2LinksReplacer;
+import com.github.golubevda.gpx2kml.extension.CoordinatesLinkGenerator;
 import net.sf.saxon.s9api.*;
 
 import javax.xml.transform.stream.StreamSource;
@@ -29,15 +30,20 @@ public class Gpx2KmlConverter {
 
     static {
         PROCESSOR = new Processor(false);
-        PROCESSOR.registerExtensionFunction(new Coordinates2LinksReplacer());
-        final XsltCompiler compiler = PROCESSOR.newXsltCompiler();
+        registerExtensions();
 
+        final XsltCompiler compiler = PROCESSOR.newXsltCompiler();
         final String xsltResourcePath = "/gpx2kml.xslt";
         try (InputStream xsltStream = new BufferedInputStream(Objects.requireNonNull(Gpx2KmlConverter.class.getResourceAsStream(xsltResourcePath)))) {
             XSLT_EXECUTABLE = compiler.compile(new StreamSource(xsltStream));
         } catch (Exception e) {
             throw new RuntimeException("Failed to compile XSLT document", e);
         }
+    }
+
+    private static void registerExtensions() {
+        PROCESSOR.registerExtensionFunction(new Coordinates2LinksReplacer());
+        PROCESSOR.registerExtensionFunction(new CoordinatesLinkGenerator());
     }
 
     public void convert(Parameters params) throws IOException, SaxonApiException {
