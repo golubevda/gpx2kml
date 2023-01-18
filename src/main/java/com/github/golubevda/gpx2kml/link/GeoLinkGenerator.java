@@ -1,4 +1,4 @@
-package com.github.golubevda.gpx2kml.linkgen;
+package com.github.golubevda.gpx2kml.link;
 
 /**
  * @author Dmitry Golubev

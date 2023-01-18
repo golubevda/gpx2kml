@@ -1,6 +1,4 @@
-package com.github.golubevda.gpx2kml.linkgen;
-
-import com.github.golubevda.gpx2kml.LinkType;
+package com.github.golubevda.gpx2kml.link;
 
 import java.util.HashMap;
 import java.util.Map;

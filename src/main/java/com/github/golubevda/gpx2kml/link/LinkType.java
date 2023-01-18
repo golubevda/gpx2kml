@@ -1,7 +1,4 @@
-package com.github.golubevda.gpx2kml;
-
-import com.github.golubevda.gpx2kml.linkgen.GeoLinkGenerator;
-import com.github.golubevda.gpx2kml.linkgen.GeoLinkGeneratorFactory;
+package com.github.golubevda.gpx2kml.link;
 
 /**
  * @author Dmitry Golubev

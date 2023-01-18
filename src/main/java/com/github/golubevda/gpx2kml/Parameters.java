@@ -1,6 +1,8 @@
 package com.github.golubevda.gpx2kml;
 
 import com.beust.jcommander.Parameter;
+import com.github.golubevda.gpx2kml.link.LinkType;
+import com.github.golubevda.gpx2kml.output.OutputType;
 
 /**
  * @author Dmitry Golubev
@@ -21,6 +23,9 @@ public class Parameters {
 
     @Parameter(names = {"-glt", "--geo-links-type"}, description = "Тип генерируемых ссылок для координат")
     private LinkType geoLinkType = LinkType.GE0;
+
+    @Parameter(names = {"-ot", "--output-type"}, description = "Способ вывода результата конвертации")
+    private OutputType outputType = OutputType.KMZ;
 
     @Parameter(names = {"-v", "--verbose"}, description = "Вывод отладочной информации")
     private boolean verbose;
@@ -43,6 +48,10 @@ public class Parameters {
 
     public LinkType getGeoLinkType() {
         return geoLinkType;
+    }
+
+    public OutputType getOutputType() {
+        return outputType;
     }
 
     public boolean isVerbose() {

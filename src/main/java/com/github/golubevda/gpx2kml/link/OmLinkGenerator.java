@@ -1,4 +1,4 @@
-package com.github.golubevda.gpx2kml.linkgen;
+package com.github.golubevda.gpx2kml.link;
 
 /**
  * Переписанный на коленке алгоритм https://github.com/organicmaps/organicmaps/blob/master/ge0/url_generator.cpp

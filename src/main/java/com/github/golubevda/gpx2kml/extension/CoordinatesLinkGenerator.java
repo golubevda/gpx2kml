@@ -1,7 +1,7 @@
 package com.github.golubevda.gpx2kml.extension;
 
 import com.github.golubevda.gpx2kml.TemplateConstants;
-import com.github.golubevda.gpx2kml.linkgen.GeoLinkGenerator;
+import com.github.golubevda.gpx2kml.link.GeoLinkGenerator;
 import net.sf.saxon.expr.XPathContext;
 import net.sf.saxon.lib.ExtensionFunctionCall;
 import net.sf.saxon.om.Sequence;
