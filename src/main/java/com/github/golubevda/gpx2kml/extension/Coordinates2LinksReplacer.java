@@ -96,12 +96,8 @@ public class Coordinates2LinksReplacer extends CoordinatesLinkFunctionBase {
                             latChar.toUpperCase(), latDeg, latMin,
                             lonChar.toUpperCase(), lonDeg, lonMin
                     );
-                    final String textLabel = String.format("%s %02d° %.3f' %s %02d° %.3f'",
-                            latChar.toUpperCase(), latDeg, latMin,
-                            lonChar.toUpperCase(), lonDeg, lonMin
-                    );
                     final String href = linkGenerator.generateLink(coordsDD.lat, coordsDD.lon, GeoLinkGenerator.DEFAULT_ZOOM_LEVEL, hrefLabel);
-                    return String.format("<a href=\"%s\">%s</a>", href, textLabel);
+                    return String.format("<a href=\"%s\">%s</a>", href, groups.get(0));
                 }).replace(text);
 
                 return StringValue.makeStringValue(processedText);
