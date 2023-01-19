@@ -1,15 +1,18 @@
 package com.github.golubevda.gpx2kml;
 
+import com.github.golubevda.gpx2kml.extension.Coordinates2LinksReplacer;
+import com.github.golubevda.gpx2kml.extension.CoordinatesLinkGenerator;
+import com.github.golubevda.gpx2kml.extension.ItemSetExtension;
+import com.github.golubevda.gpx2kml.output.OutputFactory;
 import net.sf.saxon.s9api.*;
-import com.github.golubevda.gpx2kml.extension.TextCoordinatesReplacer;
 
 import javax.xml.transform.stream.StreamSource;
 import java.io.*;
+import java.net.URI;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.Collections;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
+import java.util.stream.Collectors;
 
 import static com.github.golubevda.gpx2kml.TemplateConstants.*;
 
@@ -24,9 +27,9 @@ public class Gpx2KmlConverter {
 
     static {
         PROCESSOR = new Processor(false);
-        PROCESSOR.registerExtensionFunction(new TextCoordinatesReplacer());
-        final XsltCompiler compiler = PROCESSOR.newXsltCompiler();
+        registerExtensions();
 
+        final XsltCompiler compiler = PROCESSOR.newXsltCompiler();
         final String xsltResourcePath = "/gpx2kml.xslt";
         try (InputStream xsltStream = new BufferedInputStream(Objects.requireNonNull(Gpx2KmlConverter.class.getResourceAsStream(xsltResourcePath)))) {
             XSLT_EXECUTABLE = compiler.compile(new StreamSource(xsltStream));
@@ -35,51 +38,62 @@ public class Gpx2KmlConverter {
         }
     }
 
+    private static void registerExtensions() {
+        PROCESSOR.registerExtensionFunction(new Coordinates2LinksReplacer());
+        PROCESSOR.registerExtensionFunction(new CoordinatesLinkGenerator());
+        PROCESSOR.registerExtensionFunction(new ItemSetExtension());
+    }
+
     public void convert(Parameters params) throws IOException, SaxonApiException {
-        final File inputFile = new File(params.getInputFile());
-        if (!inputFile.exists()) {
-            throw new IllegalArgumentException("Input file " + inputFile.getAbsolutePath() + " does not exist");
+        final Collection<URI> inputUris = getInputUris(params);
+
+        final Xslt30Transformer transformer = XSLT_EXECUTABLE.load30();
+        final Map<QName, XdmValue> templateParams = createTemplateParams(params);
+        templateParams.put(PARAM_INPUT_FILES, XdmValue.makeSequence(inputUris));
+        transformer.setStylesheetParameters(templateParams);
+
+        Destination destination = null;
+        try (OutputStream os = OutputFactory.createOutputStream(params)) {
+            destination = PROCESSOR.newSerializer(os);
+            transformer.callTemplate(ENTRY_TEMPLATE_NAME, destination);
+        } finally {
+            if (destination != null) {
+                destination.close();
+            }
         }
-        if (inputFile.isDirectory()) {
-            throw new IllegalArgumentException("Input file " + inputFile.getAbsolutePath() + " is a directory");
+    }
+
+    private Collection<URI> getInputUris(Parameters params) {
+        final File input = new File(params.getInputFile());
+        if (!input.exists()) {
+            throw new IllegalArgumentException("Input file " + input.getAbsolutePath() + " does not exist");
         }
+        if (!input.isDirectory()) {
+            return Collections.singleton(input.toURI());
+        }
+
+        final File[] gpxFiles = input.listFiles(pathname -> !pathname.isDirectory() && pathname.getName().toLowerCase().endsWith(".gpx"));
+        if (gpxFiles == null || gpxFiles.length == 0) {
+            throw new IllegalArgumentException("No *.gpx files were found in input directory " + params.getInputFile());
+        }
+
+        return Arrays.stream(gpxFiles).map(File::toURI).collect(Collectors.toSet());
+    }
+
+    private Map<QName, XdmValue> createTemplateParams(Parameters params) {
+        final Map<QName, XdmValue> result = new HashMap<>();
 
         String docName = params.getDocName();
         if (docName == null || docName.trim().isEmpty()) {
             docName = getDefaultDocName();
         }
+        result.put(PARAM_DOC_NAME, XdmValue.makeValue(docName));
+        result.put(PARAM_GEO_LINK_TYPE, XdmValue.makeValue(params.getGeoLinkType().toString()));
 
-        File outputFile;
-        if (params.getOutputPath() != null && !params.getOutputPath().trim().isEmpty()) {
-            outputFile = new File(params.getOutputPath());
-            if (outputFile.exists() && outputFile.isDirectory()) {
-                throw new IllegalArgumentException("Output file " + outputFile.getAbsolutePath() + " is a directory");
-            }
-        } else {
-            outputFile = new File(validFileName(docName) + ".kml");
-        }
-
-        try (InputStream gpxStream = new BufferedInputStream(new FileInputStream(inputFile))) {
-            Destination destination = null;
-            try {
-                final Xslt30Transformer transformer = XSLT_EXECUTABLE.load30();
-                transformer.setStylesheetParameters(Collections.singletonMap(PARAM_DOC_NAME, XdmValue.makeValue(docName)));
-
-                destination = PROCESSOR.newSerializer(outputFile);
-                transformer.transform(new StreamSource(gpxStream), destination);
-            } finally {
-                if (destination != null) {
-                    destination.close();
-                }
-            }
-        }
+        return result;
     }
 
     private String getDefaultDocName() {
         return "Caches " + DATE_TIME_FORMATTER.format(LocalDateTime.now());
-    }
-
-    private String validFileName(String name) {
-        return name.replaceAll("[\\\\/:*?\"<>|]", "_");
     }
 }

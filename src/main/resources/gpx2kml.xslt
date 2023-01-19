@@ -3,10 +3,13 @@
                 xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
                 xmlns:gec="https://github.com/golubevda/gpx2kml">
     <xsl:output method="xml" encoding="UTF-8"/>
+    
+    <xsl:param name="inputFiles"/>
 
     <xsl:param name="docName"/>
+    <xsl:param name="geoLinkType"/>
 
-    <xsl:template match="/">
+    <xsl:template name="main">
         <kml xmlns="http://www.opengis.net/kml/2.2">
             <Document id="caches">
                 <name>
@@ -19,16 +22,24 @@
                 </name>
                 <Folder>
                     <name>Caches</name>
-                    <xsl:for-each
-                            select="*[local-name()='gpx']/*[local-name()='wpt'][starts-with(*[local-name()='type'], 'Geocache|')]">
-                        <xsl:call-template name="placeMarkCache"/>
+                    <xsl:for-each select="$inputFiles">
+                        <xsl:for-each
+                                select="document(.)/*[local-name()='gpx']/*[local-name()='wpt'][starts-with(*[local-name()='type'], 'Geocache|')]">
+                            <xsl:if test="gec:addToSet('caches', *[local-name()='name'])">
+                                <xsl:call-template name="placeMarkCache"/>
+                            </xsl:if>
+                        </xsl:for-each>
                     </xsl:for-each>
                 </Folder>
                 <Folder>
                     <name>Waypoints</name>
-                    <xsl:for-each
-                            select="*[local-name()='gpx']/*[local-name()='wpt'][starts-with(*[local-name()='type'], 'Waypoint|')]">
-                        <xsl:call-template name="placeMarkWaypoint"/>
+                    <xsl:for-each select="$inputFiles">
+                        <xsl:for-each
+                                select="document(.)/*[local-name()='gpx']/*[local-name()='wpt'][starts-with(*[local-name()='type'], 'Waypoint|')]">
+                            <xsl:if test="gec:addToSet('waypoints', *[local-name()='name'])">
+                                <xsl:call-template name="placeMarkWaypoint"/>
+                            </xsl:if>
+                        </xsl:for-each>
                     </xsl:for-each>
                 </Folder>
             </Document>
@@ -36,12 +47,15 @@
     </xsl:template>
 
     <xsl:template name="placeMarkCache">
-        <Placemark>
+        <Placemark xmlns="http://www.opengis.net/kml/2.2">
             <name>
                 <xsl:value-of select="*[local-name()='desc']"/>
             </name>
             <description>
-                <xsl:call-template name="description"/>
+                <xsl:call-template name="description">
+                    <xsl:with-param name="cacheLat" select="@lat"/>
+                    <xsl:with-param name="cacheLon" select="@lon"/>
+                </xsl:call-template>
             </description>
             <Point>
                 <coordinates>
@@ -68,10 +82,17 @@
     </xsl:template>
 
     <xsl:template name="description">
+        <xsl:param name="cacheLat"/>
+        <xsl:param name="cacheLon"/>
+
         <xsl:variable name="cacheCode" select="*[local-name()='name']"/>
         <xsl:variable name="cacheDate" select="*[local-name()='time']"/>
-        &lt;a href=&quot;<xsl:value-of select="(*[local-name()='url'])"/>&quot;&gt;[<xsl:value-of select="$cacheCode"/>]
-        <xsl:value-of select="*[local-name()='desc']"/>&lt;/a&gt;
+        <xsl:variable name="cacheName" select="concat('[', $cacheCode, '] ', *[local-name()='desc'])"/>
+
+        <xsl:call-template name="anchor">
+            <xsl:with-param name="href" select="(*[local-name()='url'])"/>
+            <xsl:with-param name="label" select="$cacheName"/>
+        </xsl:call-template>
         &lt;p&gt;
         <xsl:for-each select="*[local-name()='cache']">
             <xsl:call-template name="descHeader">
@@ -81,6 +102,14 @@
         </xsl:for-each>
         &lt;/p&gt;
         &lt;p&gt;
+        Показать в:
+        <xsl:call-template name="outputCoordinatesLinks">
+            <xsl:with-param name="lat" select="$cacheLat"/>
+            <xsl:with-param name="lon" select="$cacheLon"/>
+            <xsl:with-param name="name" select="$cacheName"/>
+        </xsl:call-template>
+        &lt;/p&gt;
+        &lt;p&gt;
         <xsl:call-template name="outputProcessedDescription">
             <xsl:with-param name="text" select="*[local-name()='cache']/*[local-name()='long_description']"/>
         </xsl:call-template>
@@ -88,7 +117,10 @@
         &lt;p&gt;
         <xsl:analyze-string select="(*[local-name()='url'])" regex="(?&lt;=[\?&amp;]cid=)\d+" flags=";j">
             <xsl:matching-substring>
-                &lt;a href="https://geocaching.su/showmemphotos.php?cid=<xsl:value-of select="."/>"&gt;Фотоальбом тайника&lt;/a&gt;
+                <xsl:call-template name="anchor">
+                    <xsl:with-param name="href" select="concat('https://geocaching.su/showmemphotos.php?cid=', .)"/>
+                    <xsl:with-param name="label" select="'Фотоальбом тайника'"/>
+                </xsl:call-template>
             </xsl:matching-substring>
         </xsl:analyze-string>
         &lt;/p&gt;
@@ -127,7 +159,7 @@
                         &lt;/div&gt;
                         &lt;div&gt;
                             &lt;div&gt;
-                                <xsl:value-of select="gec:replaceCoordinates(*[local-name()='text'])"/>
+                                <xsl:value-of select="gec:replaceCoordinates(*[local-name()='text'], $geoLinkType)"/>
                             &lt;/div&gt;
                         &lt;/div&gt;
                     &lt;/div&gt;
@@ -214,7 +246,7 @@
         <xsl:param name="text"/>
         <xsl:variable name="preprocessedText"
                 select="replace($text, '&lt;\s*img.*?src=&quot;(.*?/photos/.*?)&quot;.*?\s+alt=&quot;(.*?)&quot;.*?&gt;', '&lt;p&gt;&lt;a href=&quot;$1&quot;&gt;[ФОТО] $2&lt;/a&gt;&lt;/p&gt;', 's')"/>
-        <xsl:value-of select="gec:replaceCoordinates($preprocessedText)"/>
+        <xsl:value-of select="gec:replaceCoordinates($preprocessedText, $geoLinkType)"/>
     </xsl:template>
 
     <xsl:template name="outputLogType">
@@ -247,7 +279,7 @@
             <xsl:when test="$type='Write note'">
                 <xsl:call-template name="logTypeSpan">
                     <xsl:with-param name="color" select="'grey'"/>
-                    <xsl:with-param name="label" select="'&#128393;'"/>
+                    <xsl:with-param name="label" select="'&#128394;'"/>
                 </xsl:call-template>
             </xsl:when>
             <xsl:when test="$type='Didn''t find it'">
@@ -336,6 +368,25 @@
         <xsl:param name="color"/>
         <xsl:param name="label"/>
         &lt;span class="cache-type <xsl:value-of select="$color"/>"&gt;<xsl:value-of select="$label"/>&lt;/span&gt;
+    </xsl:template>
+
+    <xsl:template name="outputCoordinatesLinks">
+        <xsl:param name="lat"/>
+        <xsl:param name="lon"/>
+        <xsl:param name="name"/>
+        [<xsl:for-each select="('YM', 'GM')">
+            <xsl:call-template name="anchor">
+                <xsl:with-param name="href" select="gec:coordinatesLink(., $lat, $lon, $name)"/>
+                <xsl:with-param name="label" select="."/>
+            </xsl:call-template>
+            <xsl:if test="position() != last()"> | </xsl:if>
+        </xsl:for-each>]
+    </xsl:template>
+
+    <xsl:template name="anchor">
+        <xsl:param name="href"/>
+        <xsl:param name="label"/>
+        &lt;a href=&quot;<xsl:value-of select="$href"/>&quot;&gt;<xsl:value-of select="$label"/>&lt;/a&gt;
     </xsl:template>
 
 </xsl:stylesheet>
