@@ -12,7 +12,7 @@ public class Parameters {
     @Parameter(names = {"-h", "-help", "--help"}, help = true, description = "Вывести эту справку и завершиться")
     private boolean help;
 
-    @Parameter(required = true, description = "путь_до_исходного_файла_gpx")
+    @Parameter(required = true, description = "<Путь до исходного файла GPX или директории с файлами *.gpx для преобразования>")
     private String inputFile;
 
     @Parameter(names = {"-o", "--output"}, description = "Путь для выгрузки файла *.kml")

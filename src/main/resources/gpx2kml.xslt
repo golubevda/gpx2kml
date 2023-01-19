@@ -3,11 +3,13 @@
                 xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
                 xmlns:gec="https://github.com/golubevda/gpx2kml">
     <xsl:output method="xml" encoding="UTF-8"/>
+    
+    <xsl:param name="inputFiles"/>
 
     <xsl:param name="docName"/>
     <xsl:param name="geoLinkType"/>
 
-    <xsl:template match="/">
+    <xsl:template name="main">
         <kml xmlns="http://www.opengis.net/kml/2.2">
             <Document id="caches">
                 <name>
@@ -20,16 +22,24 @@
                 </name>
                 <Folder>
                     <name>Caches</name>
-                    <xsl:for-each
-                            select="*[local-name()='gpx']/*[local-name()='wpt'][starts-with(*[local-name()='type'], 'Geocache|')]">
-                        <xsl:call-template name="placeMarkCache"/>
+                    <xsl:for-each select="$inputFiles">
+                        <xsl:for-each
+                                select="document(.)/*[local-name()='gpx']/*[local-name()='wpt'][starts-with(*[local-name()='type'], 'Geocache|')]">
+                            <xsl:if test="gec:addToSet('caches', *[local-name()='name'])">
+                                <xsl:call-template name="placeMarkCache"/>
+                            </xsl:if>
+                        </xsl:for-each>
                     </xsl:for-each>
                 </Folder>
                 <Folder>
                     <name>Waypoints</name>
-                    <xsl:for-each
-                            select="*[local-name()='gpx']/*[local-name()='wpt'][starts-with(*[local-name()='type'], 'Waypoint|')]">
-                        <xsl:call-template name="placeMarkWaypoint"/>
+                    <xsl:for-each select="$inputFiles">
+                        <xsl:for-each
+                                select="document(.)/*[local-name()='gpx']/*[local-name()='wpt'][starts-with(*[local-name()='type'], 'Waypoint|')]">
+                            <xsl:if test="gec:addToSet('waypoints', *[local-name()='name'])">
+                                <xsl:call-template name="placeMarkWaypoint"/>
+                            </xsl:if>
+                        </xsl:for-each>
                     </xsl:for-each>
                 </Folder>
             </Document>
@@ -37,7 +47,7 @@
     </xsl:template>
 
     <xsl:template name="placeMarkCache">
-        <Placemark>
+        <Placemark xmlns="http://www.opengis.net/kml/2.2">
             <name>
                 <xsl:value-of select="*[local-name()='desc']"/>
             </name>
@@ -364,14 +374,13 @@
         <xsl:param name="lat"/>
         <xsl:param name="lon"/>
         <xsl:param name="name"/>
-        <xsl:for-each select="('YM', 'GM')">
-            [
+        [<xsl:for-each select="('YM', 'GM')">
             <xsl:call-template name="anchor">
                 <xsl:with-param name="href" select="gec:coordinatesLink(., $lat, $lon, $name)"/>
                 <xsl:with-param name="label" select="."/>
             </xsl:call-template>
-            ]
-        </xsl:for-each>
+            <xsl:if test="position() != last()"> | </xsl:if>
+        </xsl:for-each>]
     </xsl:template>
 
     <xsl:template name="anchor">
